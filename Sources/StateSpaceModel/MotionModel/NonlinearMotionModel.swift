@@ -8,8 +8,6 @@ public class NonlinearMotionModel {
 
     public typealias Functions = (state: StateFunction, jacobian: JacobianFunction)
 
-    public let dimensions: Dimensions
-
     private let function: StateFunction
     private let jacobian: JacobianFunction
 
@@ -18,7 +16,6 @@ public class NonlinearMotionModel {
         function: @escaping StateFunction,
         jacobian: JacobianFunction? = nil
     ) {
-        self.dimensions = Dimensions(state: dimensions.state)
         self.function = function
         self.jacobian = jacobian ?? Self.numericJacobian(for: function, dimensions: dimensions)
     }
@@ -34,18 +31,21 @@ public class NonlinearMotionModel {
     }
 }
 
-extension NonlinearMotionModel: MotionModelProtocol {
+extension NonlinearMotionModel: StatefulModelProtocol {
     public typealias State = Vector<Double>
-    public typealias Dimensions = StateDimensions
+}
 
+extension NonlinearMotionModel: DifferentiableModel {
+    public typealias Jacobian = Matrix<Double>
+}
+
+extension NonlinearMotionModel: MotionModelProtocol {
     public func apply(state x: State) -> State {
         return self.function(x)
     }
 }
 
 extension NonlinearMotionModel: DifferentiableMotionModel {
-    public typealias Jacobian = Matrix<Double>
-
     public func jacobian(state x: State) -> Jacobian {
         return self.jacobian(x)
     }
@@ -58,12 +58,6 @@ extension NonlinearMotionModel: DimensionsValidatable {
         guard let typedDimensions = dimensions as? TypedDimensions else {
             throw DimensionsError.invalidType(
                 message: "Type \(type(of: dimensions)) does not conform to \(TypedDimensions.self)"
-            )
-        }
-
-        guard self.dimensions.state == typedDimensions.state else {
-            throw DimensionsError.invalidValue(
-                message: "Expected `self.dimensions.state == \(typedDimensions.state)`, found \(self.dimensions.state)"
             )
         }
 
