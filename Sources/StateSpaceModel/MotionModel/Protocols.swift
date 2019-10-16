@@ -48,3 +48,17 @@ public protocol ControllableMotionModelProtocol: MotionModelProtocol
     /// ```
     func apply(state x: State, control u: Control?) -> State
 }
+
+public protocol DifferentialMotionModel: MotionModelProtocol {
+    associatedtype Jacobian
+
+    /// Calculate jacobian matrix:
+    ///
+    /// ```
+    /// F(k) = df(k)|
+    ///        -----|
+    ///         d(x)|
+    ///             |x=X
+    /// ```
+    func jacobian(state x: State) -> Jacobian
+}
