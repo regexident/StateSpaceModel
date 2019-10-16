@@ -39,7 +39,7 @@ extension NonlinearMotionModel: DifferentiableModel {
     public typealias Jacobian = Matrix<Double>
 }
 
-extension NonlinearMotionModel: MotionModelProtocol {
+extension NonlinearMotionModel: UncontrollableMotionModelProtocol {
     public func apply(state x: State) -> State {
         return self.function(x)
     }

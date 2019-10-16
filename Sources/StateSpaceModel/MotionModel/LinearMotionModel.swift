@@ -25,7 +25,7 @@ extension LinearMotionModel: StatefulModelProtocol {
     public typealias State = Vector<Double>
 }
 
-extension LinearMotionModel: MotionModelProtocol {
+extension LinearMotionModel: UncontrollableMotionModelProtocol {
    public func apply(state x: State) -> State {
         let a = self.state
         return a * x

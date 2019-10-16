@@ -55,7 +55,13 @@ extension BrownianMotionModel: ControllableModelProtocol
 }
 
 extension BrownianMotionModel: MotionModelProtocol
-    where MotionModel: MotionModelProtocol, MotionModel.State == Vector<Double>
+    where MotionModel: MotionModelProtocol
+{
+    // Nothing
+}
+
+extension BrownianMotionModel: UncontrollableMotionModelProtocol
+    where MotionModel: UncontrollableMotionModelProtocol, MotionModel.State == Vector<Double>
 {
     public func apply(state x: State) -> State {
         let xHat = self.model.apply(state: x)

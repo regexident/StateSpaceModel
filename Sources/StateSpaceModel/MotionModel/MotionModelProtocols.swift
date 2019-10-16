@@ -3,6 +3,10 @@ import Foundation
 import Surge
 
 public protocol MotionModelProtocol: StatefulModelProtocol {
+
+}
+
+public protocol UncontrollableMotionModelProtocol: MotionModelProtocol {
     /// Calculate predicted state estimate
     ///
     /// ```
@@ -17,7 +21,7 @@ public protocol MotionModelProtocol: StatefulModelProtocol {
     func apply(state x: State) -> State
 }
 
-public protocol ControllableMotionModelProtocol: ControllableModelProtocol, StatefulModelProtocol {
+public protocol ControllableMotionModelProtocol: MotionModelProtocol, ControllableModelProtocol {
     /// Calculate predicted state estimate
     ///
     /// ```

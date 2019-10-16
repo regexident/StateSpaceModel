@@ -12,7 +12,7 @@ extension ZeroMotionModel: StatefulModelProtocol {
     public typealias State = Vector<Double>
 }
 
-extension ZeroMotionModel: MotionModelProtocol {
+extension ZeroMotionModel: UncontrollableMotionModelProtocol {
    public func apply(state x: State) -> State {
         return x
     }

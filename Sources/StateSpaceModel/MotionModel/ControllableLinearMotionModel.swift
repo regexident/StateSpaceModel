@@ -45,7 +45,7 @@ extension ControllableLinearMotionModel: ControllableModelProtocol {
     public typealias Control = Vector<Double>
 }
 
-extension ControllableLinearMotionModel: MotionModelProtocol {
+extension ControllableLinearMotionModel: UncontrollableMotionModelProtocol {
     public func apply(state x: State) -> State {
         return self.uncontrolledModel.apply(state: x)
     }
