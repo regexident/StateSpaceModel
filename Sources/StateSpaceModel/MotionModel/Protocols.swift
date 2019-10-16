@@ -2,12 +2,6 @@ import Foundation
 
 import Surge
 
-public protocol NeutralControl {
-    associatedtype Dimensions: DimensionsProtocol
-
-    static func neutral(for dimensions: Dimensions) -> Self
-}
-
 public protocol DimensionsValidatable {
     /// Validate the model for a given dimensional environment, or throw `Error`.
     ///
