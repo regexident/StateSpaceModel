@@ -2,36 +2,6 @@ import Foundation
 
 import Surge
 
-public protocol DimensionsValidatable {
-    /// Validate the model for a given dimensional environment, or throw `Error`.
-    ///
-    /// - Parameters:
-    ///   - dimensions: the environment's dimensions
-    func validate(for dimensions: DimensionsProtocol) throws
-}
-
-//public protocol DimensionalModelProtocol {
-//    associatedtype Dimensions: DimensionsProtocol
-//
-//    var dimensions: Dimensions { get }
-//}
-
-public protocol DimensionalModelProtocol {
-    var dimensions: DimensionsProtocol { get }
-}
-
-public protocol StatefulModelProtocol {
-    associatedtype State
-}
-
-public protocol ControllableModelProtocol {
-    associatedtype Control
-}
-
-public protocol DifferentiableModel {
-    associatedtype Jacobian
-}
-
 public protocol MotionModelProtocol: StatefulModelProtocol {
     /// Calculate predicted state estimate
     ///
