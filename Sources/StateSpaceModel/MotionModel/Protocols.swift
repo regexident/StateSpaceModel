@@ -29,3 +29,22 @@ public protocol MotionModelProtocol {
     /// ```
     func apply(state x: State) -> State
 }
+
+public protocol ControllableMotionModelProtocol: MotionModelProtocol
+    where Dimensions: ControlDimensionsProtocol
+{
+    associatedtype Control
+
+    /// Calculate predicted state estimate
+    ///
+    /// ```
+    /// x'(k) = A * x(k-1) + B * u(k)
+    /// ```
+    ///
+    /// or more generally
+    ///
+    /// ```
+    /// x'(k) = f(x(k-1))
+    /// ```
+    func apply(state x: State, control u: Control?) -> State
+}
