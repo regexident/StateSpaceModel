@@ -5,26 +5,33 @@ import Surge
 public class ControllableLinearMotionModel<UncontrolledMotionModel>
     where UncontrolledMotionModel: LinearMotionModel
 {
-    public let state: Matrix<Double>
+    public let uncontrolledModel: UncontrolledMotionModel
     public let control: Matrix<Double>
 
     public init(
-        state: Matrix<Double>,
+        uncontrolledModel: UncontrolledMotionModel,
         control: Matrix<Double>
     ) {
-        assert(state.shape == .square, "Expected square matrix")
-        assert(state.columns == control.rows, "State and control matrixes are not compatible")
+        assert(uncontrolledModel.state.shape == .square, "Expected square matrix")
+        assert(uncontrolledModel.state.columns == control.rows, "State and control matrixes are not compatible")
 
-        self.state = state
+        self.uncontrolledModel = uncontrolledModel
         self.control = control
     }
 }
 
 extension ControllableLinearMotionModel: DimensionalModelProtocol {
     public var dimensions: DimensionsProtocol {
+        typealias TypedDimensions = StateDimensionsProtocol
+
+        let dimensions = self.uncontrolledModel.dimensions
+        guard let typedDimensions = dimensions as? TypedDimensions else {
+            fatalError("Type \(type(of: dimensions)) does not conform to \(TypedDimensions.self)")
+        }
+
         // Given a square matrix it shouldn't matter
         // whether to return `matrix.rows` or `matrix.columns`:
-        let state = self.state.rows
+        let state = typedDimensions.state
         let control = self.control.columns
         return ControllableStateDimensions(state: state, control: control)
     }
@@ -40,8 +47,7 @@ extension ControllableLinearMotionModel: ControllableModelProtocol {
 
 extension ControllableLinearMotionModel: MotionModelProtocol {
     public func apply(state x: State) -> State {
-        let a = self.state
-        return a * x
+        return self.uncontrolledModel.apply(state: x)
     }
 }
 
@@ -55,23 +61,13 @@ extension ControllableLinearMotionModel: ControllableMotionModelProtocol {
 
 extension ControllableLinearMotionModel: DimensionsValidatable {
     public func validate(for dimensions: DimensionsProtocol) throws {
+        try self.uncontrolledModel.validate(for: dimensions)
+
         typealias TypedDimensions = StateDimensionsProtocol & ControlDimensionsProtocol
 
         guard let typedDimensions = dimensions as? TypedDimensions else {
             throw DimensionsError.invalidType(
                 message: "Type \(type(of: dimensions)) does not conform to \(TypedDimensions.self)"
-            )
-        }
-
-        guard self.state.columns == typedDimensions.state else {
-            throw MatrixError.invalidColumnCount(
-                message: "Expected \(typedDimensions.state) columns in `self.state`, found \(self.state.columns)"
-            )
-        }
-
-        guard self.state.rows == typedDimensions.state else {
-            throw MatrixError.invalidRowCount(
-                message: "Expected \(typedDimensions.state) columns in `self.state`, found \(self.state.rows)"
             )
         }
 
