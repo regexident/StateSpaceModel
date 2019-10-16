@@ -8,6 +8,10 @@ public protocol ControllableModelProtocol {
     associatedtype Control
 }
 
+public protocol ObservableModelProtocol {
+    associatedtype Observation
+}
+
 public protocol DifferentiableModel {
     associatedtype Jacobian
 }
