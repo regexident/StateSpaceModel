@@ -3,35 +3,34 @@ import Foundation
 import Surge
 
 public class NonlinearMotionModel {
-    public let dimensions: Dimensions
-
-    public typealias StateFunction = (Vector<Double>) -> Vector<Double>
-    public typealias JacobianFunction = (Vector<Double>) -> Matrix<Double>
+    public typealias StateFunction = (State) -> State
+    public typealias JacobianFunction = (State) -> Jacobian
 
     public typealias Functions = (state: StateFunction, jacobian: JacobianFunction)
+
+    public let dimensions: Dimensions
 
     private let function: StateFunction
     private let jacobian: JacobianFunction
 
-    public convenience init(
-        dimensions: StateDimensionsProtocol,
-        function: @escaping StateFunction
-    ) {
-        self.init(dimensions: dimensions, function: function) { state in
-            let jacobian = NumericJacobian(rows: dimensions.state, columns: dimensions.state)
-            return jacobian.numeric(state: state) { function($0) }
-        }
-    }
-
     public init(
         dimensions: StateDimensionsProtocol,
         function: @escaping StateFunction,
-        jacobian: @escaping JacobianFunction
+        jacobian: JacobianFunction? = nil
     ) {
-        let dimensions = Dimensions(state: dimensions.state)
-        self.dimensions = dimensions
+        self.dimensions = Dimensions(state: dimensions.state)
         self.function = function
-        self.jacobian = jacobian
+        self.jacobian = jacobian ?? Self.numericJacobian(for: function, dimensions: dimensions)
+    }
+
+    private static func numericJacobian(
+        for function: @escaping StateFunction,
+        dimensions: StateDimensionsProtocol
+    ) -> JacobianFunction {
+        return { state in
+            let jacobian = NumericJacobian(rows: dimensions.state, columns: dimensions.state)
+            return jacobian.numeric(state: state) { function($0) }
+        }
     }
 }
 
@@ -44,7 +43,7 @@ extension NonlinearMotionModel: MotionModelProtocol {
     }
 }
 
-extension NonlinearMotionModel: DifferentialMotionModel {
+extension NonlinearMotionModel: DifferentiableMotionModel {
     public typealias Jacobian = Matrix<Double>
 
     public func jacobian(state x: State) -> Jacobian {

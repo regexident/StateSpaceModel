@@ -2,6 +2,12 @@ import Foundation
 
 import Surge
 
+public protocol NeutralControl {
+    associatedtype Dimensions: DimensionsProtocol
+
+    static func neutral(for dimensions: Dimensions) -> Self
+}
+
 public protocol DimensionsValidatable {
     /// Validate the model for a given dimensional environment, or throw `Error`.
     ///
@@ -10,12 +16,29 @@ public protocol DimensionsValidatable {
     func validate(for dimensions: DimensionsProtocol) throws
 }
 
-public protocol MotionModelProtocol {
+//public protocol DimensionalModelProtocol {
+//    associatedtype Dimensions: DimensionsProtocol
+//
+//    var dimensions: Dimensions { get }
+//}
+
+public protocol DimensionalModelProtocol {
+    var dimensions: DimensionsProtocol { get }
+}
+
+public protocol StatefulModelProtocol {
     associatedtype State
-    associatedtype Dimensions: StateDimensionsProtocol
+}
 
-    var dimensions: Dimensions { get }
+public protocol ControllableModelProtocol {
+    associatedtype Control
+}
 
+public protocol DifferentiableModel {
+    associatedtype Jacobian
+}
+
+public protocol MotionModelProtocol: StatefulModelProtocol {
     /// Calculate predicted state estimate
     ///
     /// ```
@@ -30,11 +53,7 @@ public protocol MotionModelProtocol {
     func apply(state x: State) -> State
 }
 
-public protocol ControllableMotionModelProtocol: MotionModelProtocol
-    where Dimensions: ControlDimensionsProtocol
-{
-    associatedtype Control
-
+public protocol ControllableMotionModelProtocol: ControllableModelProtocol, StatefulModelProtocol {
     /// Calculate predicted state estimate
     ///
     /// ```
@@ -46,12 +65,10 @@ public protocol ControllableMotionModelProtocol: MotionModelProtocol
     /// ```
     /// x'(k) = f(x(k-1))
     /// ```
-    func apply(state x: State, control u: Control?) -> State
+    func apply(state x: State, control u: Control) -> State
 }
 
-public protocol DifferentialMotionModel: MotionModelProtocol {
-    associatedtype Jacobian
-
+public protocol DifferentiableMotionModel: StatefulModelProtocol, DifferentiableModel {
     /// Calculate jacobian matrix:
     ///
     /// ```
@@ -61,4 +78,16 @@ public protocol DifferentialMotionModel: MotionModelProtocol {
     ///             |x=X
     /// ```
     func jacobian(state x: State) -> Jacobian
+}
+
+public protocol ControllableDifferentiableMotionModelProtocol: ControllableModelProtocol, StatefulModelProtocol, DifferentiableModel {
+    /// Calculate jacobian matrix:
+    ///
+    /// ```
+    /// F(k) = df(k)|
+    ///        -----|
+    ///         d(x)|
+    ///             |x=X
+    /// ```
+    func jacobian(state x: State, control u: Control) -> Jacobian
 }

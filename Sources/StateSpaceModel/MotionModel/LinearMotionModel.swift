@@ -13,17 +13,20 @@ public class LinearMotionModel {
     }
 }
 
-extension LinearMotionModel: MotionModelProtocol {
-    public typealias State = Vector<Double>
-    public typealias Dimensions = StateDimensions
-
-    public var dimensions: Dimensions {
+extension LinearMotionModel: DimensionalModelProtocol {
+    public var dimensions: DimensionsProtocol {
         // Given a square matrix it doesn't matter
         // whether to return `matrix.rows` or `matrix.columns`:
-        return Dimensions(state: self.state.rows)
+        return StateDimensions(state: self.state.rows)
     }
+}
 
-    public func apply(state x: State) -> State {
+extension LinearMotionModel: StatefulModelProtocol {
+    public typealias State = Vector<Double>
+}
+
+extension LinearMotionModel: MotionModelProtocol {
+   public func apply(state x: State) -> State {
         let a = self.state
         return a * x
     }
@@ -31,7 +34,6 @@ extension LinearMotionModel: MotionModelProtocol {
 
 extension LinearMotionModel: DimensionsValidatable {
     public func validate(for dimensions: DimensionsProtocol) throws {
-
         typealias TypedDimensions = StateDimensionsProtocol
 
         guard let typedDimensions = dimensions as? TypedDimensions else {
