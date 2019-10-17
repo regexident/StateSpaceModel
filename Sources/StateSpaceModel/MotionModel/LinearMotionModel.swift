@@ -25,10 +25,20 @@ extension LinearMotionModel: StatefulModelProtocol {
     public typealias State = Vector<Double>
 }
 
+extension LinearMotionModel: DifferentiableModelProtocol {
+    public typealias Jacobian = Matrix<Double>
+}
+
 extension LinearMotionModel: UncontrollableMotionModelProtocol {
    public func apply(state x: State) -> State {
         let a = self.state
         return a * x
+    }
+}
+
+extension LinearMotionModel: DifferentiableMotionModelProtocol {
+    public func jacobian(state x: State) -> Jacobian {
+        return self.state
     }
 }
 
