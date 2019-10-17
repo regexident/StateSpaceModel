@@ -39,6 +39,28 @@ extension BrownianMotionModel: Controllable
     public typealias Control = MotionModel.Control
 }
 
+extension BrownianMotionModel: Differentiable
+    where MotionModel: Differentiable
+{
+    public typealias Jacobian = MotionModel.Jacobian
+}
+
+extension BrownianMotionModel: DifferentiableMotionModelProtocol
+    where MotionModel: DifferentiableMotionModelProtocol
+{
+    public func jacobian(state x: State) -> Jacobian {
+        return self.model.jacobian(state: x)
+    }
+}
+
+extension BrownianMotionModel: ControllableDifferentiableMotionModelProtocol
+    where MotionModel: ControllableDifferentiableMotionModelProtocol
+{
+    public func jacobian(state x: State, control u: Control) -> Jacobian {
+        return self.model.jacobian(state: x, control: u)
+    }
+}
+
 extension BrownianMotionModel: MotionModelProtocol
     where MotionModel: MotionModelProtocol
 {
