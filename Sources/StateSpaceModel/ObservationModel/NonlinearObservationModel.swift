@@ -16,7 +16,7 @@ public class NonlinearObservationModel {
         function: @escaping StateFunction
     ) {
         let jacobian = NumericJacobian(
-            rows: dimensions.state,
+            rows: dimensions.observation,
             columns: dimensions.state
         )
         self.init(function: function) { state in
