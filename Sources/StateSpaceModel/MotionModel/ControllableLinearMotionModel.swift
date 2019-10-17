@@ -3,7 +3,7 @@ import Foundation
 import Surge
 
 public class ControllableLinearMotionModel<UncontrolledMotionModel>
-    where UncontrolledMotionModel: LinearMotionModel
+    where UncontrolledMotionModel: MotionModelProtocol
 {
     public let uncontrolledModel: UncontrolledMotionModel
     public let control: Matrix<Double>
@@ -12,9 +12,6 @@ public class ControllableLinearMotionModel<UncontrolledMotionModel>
         uncontrolledModel: UncontrolledMotionModel,
         control: Matrix<Double>
     ) {
-        assert(uncontrolledModel.state.shape == .square, "Expected square matrix")
-        assert(uncontrolledModel.state.columns == control.rows, "State and control matrixes are not compatible")
-
         self.uncontrolledModel = uncontrolledModel
         self.control = control
     }
@@ -28,11 +25,17 @@ extension ControllableLinearMotionModel
         control: Matrix<Double>
     ) {
         let uncontrolledModel = UncontrolledMotionModel(state: state)
+
+        assert(uncontrolledModel.state.shape == .square, "Expected square matrix")
+        assert(uncontrolledModel.state.columns == control.rows, "State and control matrixes are not compatible")
+
         self.init(uncontrolledModel: uncontrolledModel, control: control)
     }
 }
 
-extension ControllableLinearMotionModel: DimensionalModelProtocol {
+extension ControllableLinearMotionModel: DimensionalModelProtocol
+    where UncontrolledMotionModel: DimensionalModelProtocol
+{
     public var dimensions: DimensionsProtocol {
         typealias TypedDimensions = StateDimensionsProtocol
 
@@ -49,21 +52,46 @@ extension ControllableLinearMotionModel: DimensionalModelProtocol {
     }
 }
 
-extension ControllableLinearMotionModel: StatefulModelProtocol {
-    public typealias State = LinearMotionModel.State
+extension ControllableLinearMotionModel: StatefulModelProtocol
+    where UncontrolledMotionModel: StatefulModelProtocol
+{
+    public typealias State = UncontrolledMotionModel.State
 }
 
 extension ControllableLinearMotionModel: ControllableModelProtocol {
     public typealias Control = Vector<Double>
 }
 
-extension ControllableLinearMotionModel: UncontrollableMotionModelProtocol {
+extension ControllableLinearMotionModel: DifferentiableModelProtocol
+    where UncontrolledMotionModel: DifferentiableModelProtocol
+{
+    public typealias Jacobian = UncontrolledMotionModel.Jacobian
+}
+
+extension ControllableLinearMotionModel: MotionModelProtocol {
+    // Nothing
+}
+
+extension ControllableLinearMotionModel: UncontrollableMotionModelProtocol
+    where UncontrolledMotionModel: UncontrollableMotionModelProtocol
+{
     public func apply(state x: State) -> State {
         return self.uncontrolledModel.apply(state: x)
     }
 }
 
-extension ControllableLinearMotionModel: ControllableMotionModelProtocol {
+extension ControllableLinearMotionModel: DifferentiableMotionModelProtocol
+    where UncontrolledMotionModel: DifferentiableMotionModelProtocol
+{
+    public func jacobian(state x: State) -> Jacobian {
+        return self.uncontrolledModel.jacobian(state: x)
+    }
+}
+
+extension ControllableLinearMotionModel: ControllableMotionModelProtocol
+    where UncontrolledMotionModel: UncontrollableMotionModelProtocol & StatefulModelProtocol,
+          UncontrolledMotionModel.State == Control
+{
     public func apply(state x: State, control u: Control) -> State {
         let xHat = self.apply(state: x)
         let b = self.control
@@ -71,9 +99,19 @@ extension ControllableLinearMotionModel: ControllableMotionModelProtocol {
     }
 }
 
+extension ControllableLinearMotionModel: ControllableDifferentiableMotionModelProtocol
+    where UncontrolledMotionModel: DifferentiableMotionModelProtocol
+{
+    public func jacobian(state x: State, control u: Control) -> Jacobian {
+        return self.jacobian(state: x)
+    }
+}
+
 extension ControllableLinearMotionModel: DimensionsValidatable {
     public func validate(for dimensions: DimensionsProtocol) throws {
-        try self.uncontrolledModel.validate(for: dimensions)
+        if let validatableModel = self.uncontrolledModel as? DimensionsValidatable {
+            try validatableModel.validate(for: dimensions)
+        }
 
         typealias TypedDimensions = StateDimensionsProtocol & ControlDimensionsProtocol
 
