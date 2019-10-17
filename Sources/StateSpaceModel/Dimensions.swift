@@ -82,7 +82,7 @@ extension ObservableStateDimensions: CustomStringConvertible {
     }
 }
 
-public struct ControllableObservableStateDimensions: StateDimensionsProtocol, ControlDimensionsProtocol, ObservationDimensionsProtocol, Hashable, Equatable {
+public struct ObservableControllableStateDimensions: StateDimensionsProtocol, ControlDimensionsProtocol, ObservationDimensionsProtocol, Hashable, Equatable {
     public let state: Int
     public let control: Int
     public let observation: Int
@@ -98,7 +98,7 @@ public struct ControllableObservableStateDimensions: StateDimensionsProtocol, Co
     }
 }
 
-extension ControllableObservableStateDimensions: CustomStringConvertible {
+extension ObservableControllableStateDimensions: CustomStringConvertible {
     public var description: String {
         return "{ state: \(self.state), control: \(self.control), observation: \(observation) }"
     }
