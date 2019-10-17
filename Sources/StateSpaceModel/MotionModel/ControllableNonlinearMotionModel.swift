@@ -12,7 +12,7 @@ public class ControllableNonlinearMotionModel {
     private let jacobian: JacobianFunction
 
     public convenience init(
-        dimensions: ControllableStateDimensionsProtocol,
+        dimensions: DimensionsProtocol,
         function: @escaping StateFunction
     ) {
         let jacobian = NumericJacobian(
@@ -59,25 +59,17 @@ extension ControllableNonlinearMotionModel: ControllableDifferentiableMotionMode
 
 extension ControllableNonlinearMotionModel: DimensionsValidatable {
     public func validate(for dimensions: DimensionsProtocol) throws {
-        typealias TypedDimensions = ControllableStateDimensionsProtocol
-
-        guard let typedDimensions = dimensions as? TypedDimensions else {
-            throw DimensionsError.invalidType(
-                message: "Type \(type(of: dimensions)) does not conform to \(TypedDimensions.self)"
-            )
-        }
-
         // To validate a function-defined model one needs to actually run it on some dummy data.
         // Given the obvious overhead of such a thorough check we choose to only run it on DEBUG builds:
 
         #if DEBUG
-        let control = Vector(dimensions: typedDimensions.control, repeatedValue: 0.0)
-        let stateBefore = Vector(dimensions: typedDimensions.state, repeatedValue: 0.0)
+        let control = Vector(dimensions: dimensions.control, repeatedValue: 0.0)
+        let stateBefore = Vector(dimensions: dimensions.state, repeatedValue: 0.0)
         let stateAfter = self.apply(state: stateBefore, control: control)
 
-        if stateAfter.dimensions != typedDimensions.state {
+        if stateAfter.dimensions != dimensions.state {
             throw VectorError.invalidDimensionCount(
-                message: "Expected output vector of \(typedDimensions.state) dimensions, found \(stateAfter.dimensions)"
+                message: "Expected output vector of \(dimensions.state) dimensions, found \(stateAfter.dimensions)"
             )
         }
         #endif

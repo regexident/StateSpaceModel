@@ -33,25 +33,6 @@ extension ControllableLinearMotionModel
     }
 }
 
-extension ControllableLinearMotionModel: DimensionalModelProtocol
-    where UncontrolledMotionModel: DimensionalModelProtocol
-{
-    public var dimensions: DimensionsProtocol {
-        typealias TypedDimensions = StateDimensionsProtocol
-
-        let dimensions = self.uncontrolledModel.dimensions
-        guard let typedDimensions = dimensions as? TypedDimensions else {
-            fatalError("Type \(type(of: dimensions)) does not conform to \(TypedDimensions.self)")
-        }
-
-        // Given a square matrix it shouldn't matter
-        // whether to return `matrix.rows` or `matrix.columns`:
-        let state = typedDimensions.state
-        let control = self.control.columns
-        return ControllableStateDimensions(state: state, control: control)
-    }
-}
-
 extension ControllableLinearMotionModel: StatefulModelProtocol
     where UncontrolledMotionModel: StatefulModelProtocol
 {
@@ -113,23 +94,15 @@ extension ControllableLinearMotionModel: DimensionsValidatable {
             try validatableModel.validate(for: dimensions)
         }
 
-        typealias TypedDimensions = StateDimensionsProtocol & ControlDimensionsProtocol
-
-        guard let typedDimensions = dimensions as? TypedDimensions else {
-            throw DimensionsError.invalidType(
-                message: "Type \(type(of: dimensions)) does not conform to \(TypedDimensions.self)"
-            )
-        }
-
-        guard self.control.columns == typedDimensions.control else {
+        guard self.control.columns == dimensions.control else {
             throw MatrixError.invalidColumnCount(
-                message: "Expected \(typedDimensions.control) columns in `self.control`, found \(self.control.columns)"
+                message: "Expected \(dimensions.control) columns in `self.control`, found \(self.control.columns)"
             )
         }
 
-        guard self.control.rows == typedDimensions.state else {
+        guard self.control.rows == dimensions.state else {
             throw MatrixError.invalidRowCount(
-                message: "Expected \(typedDimensions.state) columns in `self.control`, found \(self.control.rows)"
+                message: "Expected \(dimensions.state) columns in `self.control`, found \(self.control.rows)"
             )
         }
     }

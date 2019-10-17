@@ -24,17 +24,9 @@ extension TransparentObservationModel: ObservationModelProtocol {
 
 extension TransparentObservationModel: DimensionsValidatable {
     public func validate(for dimensions: DimensionsProtocol) throws {
-        typealias TypedDimensions = ObservableStateDimensionsProtocol
-
-        guard let typedDimensions = dimensions as? TypedDimensions else {
-            throw DimensionsError.invalidType(
-                message: "Type \(type(of: dimensions)) does not conform to \(TypedDimensions.self)"
-            )
-        }
-
-        guard typedDimensions.state == typedDimensions.observation else {
+        guard dimensions.state == dimensions.observation else {
             throw DimensionsError.invalidValue(
-                message: "Expected `dimension.state == dimensions.observation, found `\(typedDimensions.state) != \(typedDimensions.observation)"
+                message: "Expected `dimension.state == dimensions.observation, found `\(dimensions.state) != \(dimensions.observation)"
             )
         }
     }

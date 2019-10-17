@@ -16,10 +16,6 @@ public protocol DifferentiableModelProtocol {
     associatedtype Jacobian
 }
 
-public protocol DimensionalModelProtocol {
-    var dimensions: DimensionsProtocol { get }
-}
-
 public protocol DimensionsValidatable {
     /// Validate the model for a given dimensional environment, or throw `Error`.
     ///

@@ -12,7 +12,7 @@ public class NonlinearObservationModel {
     private let jacobian: JacobianFunction
 
     public convenience init(
-        dimensions: StateDimensionsProtocol,
+        dimensions: DimensionsProtocol,
         function: @escaping StateFunction
     ) {
         let jacobian = NumericJacobian(
@@ -59,24 +59,16 @@ extension NonlinearObservationModel: DifferentiableObservationModelProtocol {
 
 extension NonlinearObservationModel: DimensionsValidatable {
     public func validate(for dimensions: DimensionsProtocol) throws {
-        typealias TypedDimensions = ObservableStateDimensionsProtocol
-
-        guard let typedDimensions = dimensions as? TypedDimensions else {
-            throw DimensionsError.invalidType(
-                message: "Type \(type(of: dimensions)) does not conform to \(TypedDimensions.self)"
-            )
-        }
-
         // To validate a function-defined model one needs to actually run it on some dummy data.
         // Given the obvious overhead of such a thorough check we choose to only run it on DEBUG builds:
         
         #if DEBUG
-        let state = Vector(dimensions: typedDimensions.state, repeatedValue: 0.0)
+        let state = Vector(dimensions: dimensions.state, repeatedValue: 0.0)
         let observation = self.apply(state: state)
 
-        if observation.dimensions != typedDimensions.observation {
+        if observation.dimensions != dimensions.observation {
             throw VectorError.invalidDimensionCount(
-                message: "Expected output vector of \(typedDimensions.observation) dimensions, found \(observation.dimensions)"
+                message: "Expected output vector of \(dimensions.observation) dimensions, found \(observation.dimensions)"
             )
         }
         #endif

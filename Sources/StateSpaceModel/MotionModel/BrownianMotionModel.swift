@@ -2,9 +2,7 @@ import Foundation
 
 import Surge
 
-public class BrownianMotionModel<MotionModel>
-    where MotionModel: DimensionalModelProtocol
-{
+public class BrownianMotionModel<MotionModel> {
     let model: MotionModel
 
     public let noise: Vector<Double>
@@ -13,32 +11,18 @@ public class BrownianMotionModel<MotionModel>
         model: MotionModel,
         noise: Vector<Double>
     ) {
-        typealias TypedDimensions = StateDimensionsProtocol
-        guard let dimensions = model.dimensions as? TypedDimensions else {
-            assert(false, "Type \(type(of: model.dimensions)) does not conform to \(TypedDimensions.self)")
-        }
-
-        // Given a square matrix it doesn't matter
-        // whether to check against `noise.rows` or `noise.columns`:
-        assert(dimensions.state == noise.dimensions, "State matrix not compatible with noise vector")
-
         self.model = model
         self.noise = noise
     }
 
     private func applyBrownianMotion(state x: Vector<Double>) -> Vector<Double> {
+        fatalError("Unimplemented")
+
         // FIXME: generate normal-distributed noise displacement vector
         // with with mean `0.0` and individual std-deviations from `self.noise`,
-        let y = self.noise
-        return x + y
-    }
-}
 
-extension BrownianMotionModel: DimensionalModelProtocol
-    where MotionModel: DimensionalModelProtocol
-{
-    public var dimensions: DimensionsProtocol {
-        return self.model.dimensions
+        // let y = self.noise
+        // return x + y
     }
 }
 
@@ -78,23 +62,15 @@ extension BrownianMotionModel: ControllableMotionModelProtocol
     }
 }
 
-extension BrownianMotionModel: DimensionsValidatable
-    where MotionModel: DimensionsValidatable
-{
+extension BrownianMotionModel: DimensionsValidatable {
     public func validate(for dimensions: DimensionsProtocol) throws {
-        try self.model.validate(for: dimensions)
-
-        typealias TypedDimensions = StateDimensionsProtocol
-
-        guard let typedDimensions = dimensions as? TypedDimensions else {
-            throw DimensionsError.invalidType(
-                message: "Type \(type(of: dimensions)) does not conform to \(TypedDimensions.self)"
-            )
+        if let validatableModel = self.model as? DimensionsValidatable {
+            try validatableModel.validate(for: dimensions)
         }
 
-        guard self.noise.dimensions == typedDimensions.state else {
+        guard self.noise.dimensions == dimensions.state else {
             throw VectorError.invalidDimensionCount(
-                message: "Expected \(typedDimensions.state) dimensions in `self.noise`, found \(self.noise.dimensions)"
+                message: "Expected \(dimensions.state) dimensions in `self.noise`, found \(self.noise.dimensions)"
             )
         }
     }
