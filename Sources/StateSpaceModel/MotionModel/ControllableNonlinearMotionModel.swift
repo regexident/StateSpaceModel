@@ -11,23 +11,25 @@ public class ControllableNonlinearMotionModel {
     private let function: StateFunction
     private let jacobian: JacobianFunction
 
-    public init(
+    public convenience init(
         dimensions: ControlledStateDimensionsProtocol,
-        function: @escaping StateFunction,
-        jacobian: JacobianFunction? = nil
+        function: @escaping StateFunction
     ) {
-        self.function = function
-        self.jacobian = jacobian ?? Self.numericJacobian(for: function, dimensions: dimensions)
-    }
-
-    private static func numericJacobian(
-        for function: @escaping StateFunction,
-        dimensions: ControlledStateDimensionsProtocol
-    ) -> JacobianFunction {
-        return { state, control in
-            let jacobian = NumericJacobian(rows: dimensions.state, columns: dimensions.state)
+        let jacobian = NumericJacobian(
+            rows: dimensions.state,
+            columns: dimensions.state
+        )
+        self.init(function: function) { state, control in
             return jacobian.numeric(state: state) { function($0, control) }
         }
+    }
+
+    public init(
+        function: @escaping StateFunction,
+        jacobian: @escaping JacobianFunction
+    ) {
+        self.function = function
+        self.jacobian = jacobian
     }
 }
 
