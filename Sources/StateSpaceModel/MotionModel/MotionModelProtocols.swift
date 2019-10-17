@@ -36,7 +36,7 @@ public protocol ControllableMotionModelProtocol: MotionModelProtocol, Controllab
     func apply(state x: State, control u: Control) -> State
 }
 
-public protocol DifferentiableMotionModel: StatefulModelProtocol, DifferentiableModel {
+public protocol DifferentiableMotionModel: StatefulModelProtocol, DifferentiableModelProtocol {
     /// Calculate jacobian matrix:
     ///
     /// ```
@@ -48,7 +48,7 @@ public protocol DifferentiableMotionModel: StatefulModelProtocol, Differentiable
     func jacobian(state x: State) -> Jacobian
 }
 
-public protocol ControllableDifferentiableMotionModelProtocol: ControllableModelProtocol, StatefulModelProtocol, DifferentiableModel {
+public protocol ControllableDifferentiableMotionModelProtocol: ControllableModelProtocol, StatefulModelProtocol, DifferentiableModelProtocol {
     /// Calculate jacobian matrix:
     ///
     /// ```

@@ -39,7 +39,7 @@ extension NonlinearObservationModel: ObservableModelProtocol {
     public typealias Observation = Vector<Double>
 }
 
-extension NonlinearObservationModel: DifferentiableModel {
+extension NonlinearObservationModel: DifferentiableModelProtocol {
     public typealias Jacobian = Matrix<Double>
 }
 
@@ -49,7 +49,7 @@ extension NonlinearObservationModel: ObservationModelProtocol {
     }
 }
 
-extension NonlinearObservationModel: DifferentiableObservationModel {
+extension NonlinearObservationModel: DifferentiableObservationModelProtocol {
     public func jacobian(state x: State) -> Jacobian {
         return self.jacobian(x)
     }

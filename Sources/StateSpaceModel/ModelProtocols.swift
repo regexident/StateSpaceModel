@@ -12,7 +12,7 @@ public protocol ObservableModelProtocol {
     associatedtype Observation
 }
 
-public protocol DifferentiableModel {
+public protocol DifferentiableModelProtocol {
     associatedtype Jacobian
 }
 

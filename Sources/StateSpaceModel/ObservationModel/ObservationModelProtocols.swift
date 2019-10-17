@@ -11,7 +11,7 @@ public protocol ObservationModelProtocol: StatefulModelProtocol, ObservableModel
     func apply(state x: State) -> Observation
 }
 
-public protocol DifferentiableObservationModel: StatefulModelProtocol, DifferentiableModel {
+public protocol DifferentiableObservationModelProtocol: StatefulModelProtocol, DifferentiableModelProtocol {
     /// Calculate jacobian matrix:
     ///
     /// ```

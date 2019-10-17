@@ -39,7 +39,7 @@ extension ControllableNonlinearMotionModel: ControllableModelProtocol {
     public typealias Control = Vector<Double>
 }
 
-extension ControllableNonlinearMotionModel: DifferentiableModel {
+extension ControllableNonlinearMotionModel: DifferentiableModelProtocol {
     public typealias Jacobian = Matrix<Double>
 }
 

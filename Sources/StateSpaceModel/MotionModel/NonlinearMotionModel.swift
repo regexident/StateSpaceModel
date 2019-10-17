@@ -35,7 +35,7 @@ extension NonlinearMotionModel: StatefulModelProtocol {
     public typealias State = Vector<Double>
 }
 
-extension NonlinearMotionModel: DifferentiableModel {
+extension NonlinearMotionModel: DifferentiableModelProtocol {
     public typealias Jacobian = Matrix<Double>
 }
 
