@@ -20,6 +20,18 @@ public class ControllableLinearMotionModel<UncontrolledMotionModel>
     }
 }
 
+extension ControllableLinearMotionModel
+    where UncontrolledMotionModel == LinearMotionModel
+{
+    public convenience init(
+        state: Matrix<Double>,
+        control: Matrix<Double>
+    ) {
+        let uncontrolledModel = UncontrolledMotionModel(state: state)
+        self.init(uncontrolledModel: uncontrolledModel, control: control)
+    }
+}
+
 extension ControllableLinearMotionModel: DimensionalModelProtocol {
     public var dimensions: DimensionsProtocol {
         typealias TypedDimensions = StateDimensionsProtocol
