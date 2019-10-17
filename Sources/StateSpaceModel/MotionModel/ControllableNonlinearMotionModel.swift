@@ -1,6 +1,7 @@
 import Foundation
 
 import Surge
+import StateSpace
 
 public class ControllableNonlinearMotionModel {
     public typealias StateFunction = (State, Control) -> State
@@ -33,15 +34,15 @@ public class ControllableNonlinearMotionModel {
     }
 }
 
-extension ControllableNonlinearMotionModel: StatefulModelProtocol {
+extension ControllableNonlinearMotionModel: Statable {
     public typealias State = LinearMotionModel.State
 }
 
-extension ControllableNonlinearMotionModel: ControllableModelProtocol {
+extension ControllableNonlinearMotionModel: Controllable {
     public typealias Control = Vector<Double>
 }
 
-extension ControllableNonlinearMotionModel: DifferentiableModelProtocol {
+extension ControllableNonlinearMotionModel: Differentiable {
     public typealias Jacobian = Matrix<Double>
 }
 

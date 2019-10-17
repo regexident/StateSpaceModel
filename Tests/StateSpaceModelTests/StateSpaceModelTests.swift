@@ -3,7 +3,7 @@ import XCTest
 
 final class StateSpaceModelTests: XCTestCase {
     func testExample() {
-        XCTFail()
+
     }
 
     static var allTests = [

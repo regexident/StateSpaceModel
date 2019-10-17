@@ -1,6 +1,7 @@
 import Foundation
 
 import Surge
+import StateSpace
 
 public class BrownianMotionModel<MotionModel> {
     let model: MotionModel
@@ -26,14 +27,14 @@ public class BrownianMotionModel<MotionModel> {
     }
 }
 
-extension BrownianMotionModel: StatefulModelProtocol
-    where MotionModel: StatefulModelProtocol
+extension BrownianMotionModel: Statable
+    where MotionModel: Statable
 {
     public typealias State = MotionModel.State
 }
 
-extension BrownianMotionModel: ControllableModelProtocol
-    where MotionModel: ControllableModelProtocol
+extension BrownianMotionModel: Controllable
+    where MotionModel: Controllable
 {
     public typealias Control = MotionModel.Control
 }

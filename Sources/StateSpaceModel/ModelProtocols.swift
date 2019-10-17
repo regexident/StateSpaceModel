@@ -1,21 +1,5 @@
 import Foundation
 
-public protocol StatefulModelProtocol {
-    associatedtype State
-}
-
-public protocol ControllableModelProtocol {
-    associatedtype Control
-}
-
-public protocol ObservableModelProtocol {
-    associatedtype Observation
-}
-
-public protocol DifferentiableModelProtocol {
-    associatedtype Jacobian
-}
-
 public protocol DimensionsValidatable {
     /// Validate the model for a given dimensional environment, or throw `Error`.
     ///

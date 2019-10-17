@@ -1,6 +1,7 @@
 import Foundation
 
 import Surge
+import StateSpace
 
 public class NonlinearMotionModel {
     public typealias StateFunction = (State) -> State
@@ -33,11 +34,11 @@ public class NonlinearMotionModel {
     }
 }
 
-extension NonlinearMotionModel: StatefulModelProtocol {
+extension NonlinearMotionModel: Statable {
     public typealias State = Vector<Double>
 }
 
-extension NonlinearMotionModel: DifferentiableModelProtocol {
+extension NonlinearMotionModel: Differentiable {
     public typealias Jacobian = Matrix<Double>
 }
 

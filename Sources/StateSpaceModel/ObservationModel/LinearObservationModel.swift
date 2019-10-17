@@ -1,6 +1,7 @@
 import Foundation
 
 import Surge
+import StateSpace
 
 public class LinearObservationModel {
     public let state: Matrix<Double>
@@ -12,15 +13,15 @@ public class LinearObservationModel {
     }
 }
 
-extension LinearObservationModel: StatefulModelProtocol {
+extension LinearObservationModel: Statable {
     public typealias State = Vector<Double>
 }
 
-extension LinearObservationModel: ObservableModelProtocol {
+extension LinearObservationModel: Observable {
     public typealias Observation = Vector<Double>
 }
 
-extension LinearObservationModel: DifferentiableModelProtocol {
+extension LinearObservationModel: Differentiable {
     public typealias Jacobian = Matrix<Double>
 }
 

@@ -15,7 +15,8 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(url: "https://github.com/jounce/Surge.git", .branch("master")),
+        .package(url: "https://github.com/regexident/StateSpace", .branch("master")),
+        .package(url: "https://github.com/jounce/Surge", .branch("master")),
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -23,6 +24,7 @@ let package = Package(
         .target(
             name: "StateSpaceModel",
             dependencies: [
+                "StateSpace",
                 "Surge",
             ]
         ),

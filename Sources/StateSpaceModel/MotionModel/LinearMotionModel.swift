@@ -1,6 +1,7 @@
 import Foundation
 
 import Surge
+import StateSpace
 
 public class LinearMotionModel {
     public let state: Matrix<Double>
@@ -13,11 +14,11 @@ public class LinearMotionModel {
     }
 }
 
-extension LinearMotionModel: StatefulModelProtocol {
+extension LinearMotionModel: Statable {
     public typealias State = Vector<Double>
 }
 
-extension LinearMotionModel: DifferentiableModelProtocol {
+extension LinearMotionModel: Differentiable {
     public typealias Jacobian = Matrix<Double>
 }
 

@@ -1,6 +1,7 @@
 import Foundation
 
 import Surge
+import StateSpace
 
 public class TransparentObservationModel {
     public init() {
@@ -8,11 +9,11 @@ public class TransparentObservationModel {
     }
 }
 
-extension TransparentObservationModel: StatefulModelProtocol {
+extension TransparentObservationModel: Statable {
     public typealias State = Vector<Double>
 }
 
-extension TransparentObservationModel: ObservableModelProtocol {
+extension TransparentObservationModel: Observable {
     public typealias Observation = Vector<Double>
 }
 

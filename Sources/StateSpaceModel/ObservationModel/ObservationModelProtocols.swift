@@ -1,8 +1,9 @@
 import Foundation
 
 import Surge
+import StateSpace
 
-public protocol ObservationModelProtocol: StatefulModelProtocol, ObservableModelProtocol {
+public protocol ObservationModelProtocol: Statable, Observable {
     /// Calculate observation estimate
     ///
     /// ```
@@ -11,7 +12,7 @@ public protocol ObservationModelProtocol: StatefulModelProtocol, ObservableModel
     func apply(state x: State) -> Observation
 }
 
-public protocol DifferentiableObservationModelProtocol: StatefulModelProtocol, DifferentiableModelProtocol {
+public protocol DifferentiableObservationModelProtocol: Statable, Differentiable {
     /// Calculate jacobian matrix:
     ///
     /// ```

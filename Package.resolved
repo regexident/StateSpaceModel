@@ -2,8 +2,17 @@
   "object": {
     "pins": [
       {
+        "package": "StateSpace",
+        "repositoryURL": "https://github.com/regexident/StateSpace",
+        "state": {
+          "branch": "master",
+          "revision": "20409bf1c6575be8f56364597a9546871acd57de",
+          "version": null
+        }
+      },
+      {
         "package": "Surge",
-        "repositoryURL": "https://github.com/jounce/Surge.git",
+        "repositoryURL": "https://github.com/jounce/Surge",
         "state": {
           "branch": "master",
           "revision": "2f35e097244c1c437ac9862fdd30b82f266c7ded",

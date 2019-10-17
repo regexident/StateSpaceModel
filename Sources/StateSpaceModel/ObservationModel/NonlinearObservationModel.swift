@@ -1,6 +1,7 @@
 import Foundation
 
 import Surge
+import StateSpace
 
 public class NonlinearObservationModel {
     public typealias StateFunction = (State) -> State
@@ -33,15 +34,15 @@ public class NonlinearObservationModel {
     }
 }
 
-extension NonlinearObservationModel: StatefulModelProtocol {
+extension NonlinearObservationModel: Statable {
     public typealias State = Vector<Double>
 }
 
-extension NonlinearObservationModel: ObservableModelProtocol {
+extension NonlinearObservationModel: Observable {
     public typealias Observation = Vector<Double>
 }
 
-extension NonlinearObservationModel: DifferentiableModelProtocol {
+extension NonlinearObservationModel: Differentiable {
     public typealias Jacobian = Matrix<Double>
 }
 

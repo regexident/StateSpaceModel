@@ -1,6 +1,7 @@
 import Foundation
 
 import Surge
+import StateSpace
 
 public class ZeroMotionModel {
     public init() {
@@ -8,7 +9,7 @@ public class ZeroMotionModel {
     }
 }
 
-extension ZeroMotionModel: StatefulModelProtocol {
+extension ZeroMotionModel: Statable {
     public typealias State = Vector<Double>
 }
 

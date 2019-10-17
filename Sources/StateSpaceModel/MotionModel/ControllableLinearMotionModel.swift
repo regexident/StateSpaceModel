@@ -1,6 +1,7 @@
 import Foundation
 
 import Surge
+import StateSpace
 
 public class ControllableLinearMotionModel<UncontrolledMotionModel>
     where UncontrolledMotionModel: MotionModelProtocol
@@ -33,18 +34,18 @@ extension ControllableLinearMotionModel
     }
 }
 
-extension ControllableLinearMotionModel: StatefulModelProtocol
-    where UncontrolledMotionModel: StatefulModelProtocol
+extension ControllableLinearMotionModel: Statable
+    where UncontrolledMotionModel: Statable
 {
     public typealias State = UncontrolledMotionModel.State
 }
 
-extension ControllableLinearMotionModel: ControllableModelProtocol {
+extension ControllableLinearMotionModel: Controllable {
     public typealias Control = Vector<Double>
 }
 
-extension ControllableLinearMotionModel: DifferentiableModelProtocol
-    where UncontrolledMotionModel: DifferentiableModelProtocol
+extension ControllableLinearMotionModel: Differentiable
+    where UncontrolledMotionModel: Differentiable
 {
     public typealias Jacobian = UncontrolledMotionModel.Jacobian
 }
@@ -70,7 +71,7 @@ extension ControllableLinearMotionModel: DifferentiableMotionModelProtocol
 }
 
 extension ControllableLinearMotionModel: ControllableMotionModelProtocol
-    where UncontrolledMotionModel: UncontrollableMotionModelProtocol & StatefulModelProtocol,
+    where UncontrolledMotionModel: UncontrollableMotionModelProtocol & Statable,
           UncontrolledMotionModel.State == Control
 {
     public func apply(state x: State, control u: Control) -> State {
