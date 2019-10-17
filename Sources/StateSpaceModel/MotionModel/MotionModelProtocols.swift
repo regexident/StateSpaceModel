@@ -9,12 +9,12 @@ public protocol MotionModelProtocol: StatefulModelProtocol {
 public protocol UncontrollableMotionModelProtocol: MotionModelProtocol {
     /// Calculate predicted state estimate
     ///
+    /// Linear case:
     /// ```
     /// x'(k) = A * x(k-1) + B * u(k)
     /// ```
     ///
-    /// or more generally
-    ///
+    /// Non-linear case:
     /// ```
     /// x'(k) = f(x(k-1))
     /// ```
@@ -24,12 +24,12 @@ public protocol UncontrollableMotionModelProtocol: MotionModelProtocol {
 public protocol ControllableMotionModelProtocol: MotionModelProtocol, ControllableModelProtocol {
     /// Calculate predicted state estimate
     ///
+    /// Linear case:
     /// ```
     /// x'(k) = A * x(k-1) + B * u(k)
     /// ```
     ///
-    /// or more generally
-    ///
+    /// Non-linear case:
     /// ```
     /// x'(k) = f(x(k-1))
     /// ```
@@ -39,6 +39,12 @@ public protocol ControllableMotionModelProtocol: MotionModelProtocol, Controllab
 public protocol DifferentiableMotionModelProtocol: StatefulModelProtocol, DifferentiableModelProtocol {
     /// Calculate jacobian matrix:
     ///
+    /// Linear case:
+    /// ```
+    /// F(k) = A
+    /// ```
+    ///
+    /// Non-linear case:
     /// ```
     /// F(k) = df(k)|
     ///        -----|
@@ -51,6 +57,12 @@ public protocol DifferentiableMotionModelProtocol: StatefulModelProtocol, Differ
 public protocol ControllableDifferentiableMotionModelProtocol: ControllableModelProtocol, StatefulModelProtocol, DifferentiableModelProtocol {
     /// Calculate jacobian matrix:
     ///
+    /// Linear case:
+    /// ```
+    /// F(k) = A
+    /// ```
+    /// 
+    /// Non-linear case:
     /// ```
     /// F(k) = df(k)|
     ///        -----|
