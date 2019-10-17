@@ -54,28 +54,12 @@ extension ControllableLinearMotionModel: MotionModelProtocol {
     // Nothing
 }
 
-extension ControllableLinearMotionModel: UncontrollableMotionModelProtocol
-    where UncontrolledMotionModel: UncontrollableMotionModelProtocol
-{
-    public func apply(state x: State) -> State {
-        return self.uncontrolledModel.apply(state: x)
-    }
-}
-
-extension ControllableLinearMotionModel: DifferentiableMotionModelProtocol
-    where UncontrolledMotionModel: DifferentiableMotionModelProtocol
-{
-    public func jacobian(state x: State) -> Jacobian {
-        return self.uncontrolledModel.jacobian(state: x)
-    }
-}
-
 extension ControllableLinearMotionModel: ControllableMotionModelProtocol
     where UncontrolledMotionModel: UncontrollableMotionModelProtocol & Statable,
           UncontrolledMotionModel.State == Control
 {
     public func apply(state x: State, control u: Control) -> State {
-        let xHat = self.apply(state: x)
+        let xHat = self.uncontrolledModel.apply(state: x)
         let b = self.control
         return xHat + (b * u)
     }
@@ -85,7 +69,7 @@ extension ControllableLinearMotionModel: ControllableDifferentiableMotionModelPr
     where UncontrolledMotionModel: DifferentiableMotionModelProtocol
 {
     public func jacobian(state x: State, control u: Control) -> Jacobian {
-        return self.jacobian(state: x)
+        return self.uncontrolledModel.jacobian(state: x)
     }
 }
 
