@@ -20,10 +20,20 @@ extension LinearObservationModel: ObservableModelProtocol {
     public typealias Observation = Vector<Double>
 }
 
+extension LinearObservationModel: DifferentiableModelProtocol {
+    public typealias Jacobian = Matrix<Double>
+}
+
 extension LinearObservationModel: ObservationModelProtocol {
    public func apply(state x: State) -> Observation {
         let a = self.state
         return a * x
+    }
+}
+
+extension LinearObservationModel: DifferentiableObservationModelProtocol {
+    public func jacobian(state x: State) -> Jacobian {
+        return self.state
     }
 }
 
