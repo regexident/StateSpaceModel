@@ -3,41 +3,41 @@ import Foundation
 import Surge
 import StateSpace
 
-public class ControllableLinearMotionModel<UncontrolledMotionModel>
-    where UncontrolledMotionModel: MotionModelProtocol
+public class ControllableLinearMotionModel<MotionModel>
+    where MotionModel: MotionModelProtocol
 {
-    public let uncontrolledModel: UncontrolledMotionModel
+    public let motionModel: MotionModel
     public let control: Matrix<Double>
 
     public init(
-        uncontrolledModel: UncontrolledMotionModel,
+        motionModel: MotionModel,
         control: Matrix<Double>
     ) {
-        self.uncontrolledModel = uncontrolledModel
+        self.motionModel = motionModel
         self.control = control
     }
 }
 
 extension ControllableLinearMotionModel
-    where UncontrolledMotionModel == LinearMotionModel
+    where MotionModel == LinearMotionModel
 {
     public convenience init(
         state: Matrix<Double>,
         control: Matrix<Double>
     ) {
-        let uncontrolledModel = UncontrolledMotionModel(state: state)
+        let motionModel = MotionModel(state: state)
 
-        assert(uncontrolledModel.state.shape == .square, "Expected square matrix")
-        assert(uncontrolledModel.state.columns == control.rows, "State and control matrixes are not compatible")
+        assert(motionModel.state.shape == .square, "Expected square matrix")
+        assert(motionModel.state.columns == control.rows, "State and control matrixes are not compatible")
 
-        self.init(uncontrolledModel: uncontrolledModel, control: control)
+        self.init(motionModel: motionModel, control: control)
     }
 }
 
 extension ControllableLinearMotionModel: Statable
-    where UncontrolledMotionModel: Statable
+    where MotionModel: Statable
 {
-    public typealias State = UncontrolledMotionModel.State
+    public typealias State = MotionModel.State
 }
 
 extension ControllableLinearMotionModel: Controllable {
@@ -45,9 +45,9 @@ extension ControllableLinearMotionModel: Controllable {
 }
 
 extension ControllableLinearMotionModel: Differentiable
-    where UncontrolledMotionModel: Differentiable
+    where MotionModel: Differentiable
 {
-    public typealias Jacobian = UncontrolledMotionModel.Jacobian
+    public typealias Jacobian = MotionModel.Jacobian
 }
 
 extension ControllableLinearMotionModel: MotionModelProtocol {
@@ -55,27 +55,27 @@ extension ControllableLinearMotionModel: MotionModelProtocol {
 }
 
 extension ControllableLinearMotionModel: ControllableMotionModelProtocol
-    where UncontrolledMotionModel: UncontrollableMotionModelProtocol & Statable,
-          UncontrolledMotionModel.State == Control
+    where MotionModel: UncontrollableMotionModelProtocol & Statable,
+          MotionModel.State == Control
 {
     public func apply(state x: State, control u: Control) -> State {
-        let xHat = self.uncontrolledModel.apply(state: x)
+        let xHat = self.motionModel.apply(state: x)
         let b = self.control
         return xHat + (b * u)
     }
 }
 
 extension ControllableLinearMotionModel: ControllableDifferentiableMotionModelProtocol
-    where UncontrolledMotionModel: DifferentiableMotionModelProtocol
+    where MotionModel: DifferentiableMotionModelProtocol
 {
     public func jacobian(state x: State, control u: Control) -> Jacobian {
-        return self.uncontrolledModel.jacobian(state: x)
+        return self.motionModel.jacobian(state: x)
     }
 }
 
 extension ControllableLinearMotionModel: DimensionsValidatable {
     public func validate(for dimensions: DimensionsProtocol) throws {
-        if let validatableModel = self.uncontrolledModel as? DimensionsValidatable {
+        if let validatableModel = self.motionModel as? DimensionsValidatable {
             try validatableModel.validate(for: dimensions)
         }
 

@@ -4,15 +4,15 @@ import Surge
 import StateSpace
 
 public class BrownianMotionModel<MotionModel> {
-    let model: MotionModel
+    let motionModel: MotionModel
 
     public let noise: Vector<Double>
 
     public init(
-        model: MotionModel,
+        motionModel: MotionModel,
         noise: Vector<Double>
     ) {
-        self.model = model
+        self.motionModel = motionModel
         self.noise = noise
     }
 
@@ -49,7 +49,7 @@ extension BrownianMotionModel: DifferentiableMotionModelProtocol
     where MotionModel: DifferentiableMotionModelProtocol
 {
     public func jacobian(state x: State) -> Jacobian {
-        return self.model.jacobian(state: x)
+        return self.motionModel.jacobian(state: x)
     }
 }
 
@@ -57,7 +57,7 @@ extension BrownianMotionModel: ControllableDifferentiableMotionModelProtocol
     where MotionModel: ControllableDifferentiableMotionModelProtocol
 {
     public func jacobian(state x: State, control u: Control) -> Jacobian {
-        return self.model.jacobian(state: x, control: u)
+        return self.motionModel.jacobian(state: x, control: u)
     }
 }
 
@@ -71,7 +71,7 @@ extension BrownianMotionModel: UncontrollableMotionModelProtocol
     where MotionModel: UncontrollableMotionModelProtocol, MotionModel.State == Vector<Double>
 {
     public func apply(state x: State) -> State {
-        let xHat = self.model.apply(state: x)
+        let xHat = self.motionModel.apply(state: x)
         return self.applyBrownianMotion(state: xHat)
     }
 }
@@ -80,14 +80,14 @@ extension BrownianMotionModel: ControllableMotionModelProtocol
     where MotionModel: ControllableMotionModelProtocol, MotionModel.State == Vector<Double>
 {
     public func apply(state x: State, control u: Control) -> State {
-        let xHat = self.model.apply(state: x, control: u)
+        let xHat = self.motionModel.apply(state: x, control: u)
         return self.applyBrownianMotion(state: xHat)
     }
 }
 
 extension BrownianMotionModel: DimensionsValidatable {
     public func validate(for dimensions: DimensionsProtocol) throws {
-        if let validatableModel = self.model as? DimensionsValidatable {
+        if let validatableModel = self.motionModel as? DimensionsValidatable {
             try validatableModel.validate(for: dimensions)
         }
 
