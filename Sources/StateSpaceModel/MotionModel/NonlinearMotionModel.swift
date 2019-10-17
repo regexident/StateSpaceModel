@@ -47,7 +47,7 @@ extension NonlinearMotionModel: UncontrollableMotionModelProtocol {
     }
 }
 
-extension NonlinearMotionModel: DifferentiableMotionModel {
+extension NonlinearMotionModel: DifferentiableMotionModelProtocol {
     public func jacobian(state x: State) -> Jacobian {
         return self.jacobian(x)
     }
