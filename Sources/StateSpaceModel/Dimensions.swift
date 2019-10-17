@@ -25,7 +25,7 @@ public protocol ObservationDimensionsProtocol: DimensionsProtocol {
     var observation: Int { get }
 }
 
-public typealias ControlledStateDimensionsProtocol = StateDimensionsProtocol & ControlDimensionsProtocol
+public typealias ControllableStateDimensionsProtocol = StateDimensionsProtocol & ControlDimensionsProtocol
 public typealias ObservableStateDimensionsProtocol = StateDimensionsProtocol & ObservationDimensionsProtocol
 
 public struct StateDimensions: StateDimensionsProtocol, Hashable, Equatable {

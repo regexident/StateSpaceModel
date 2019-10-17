@@ -12,7 +12,7 @@ public class ControllableNonlinearMotionModel {
     private let jacobian: JacobianFunction
 
     public convenience init(
-        dimensions: ControlledStateDimensionsProtocol,
+        dimensions: ControllableStateDimensionsProtocol,
         function: @escaping StateFunction
     ) {
         let jacobian = NumericJacobian(
@@ -59,7 +59,7 @@ extension ControllableNonlinearMotionModel: ControllableDifferentiableMotionMode
 
 extension ControllableNonlinearMotionModel: DimensionsValidatable {
     public func validate(for dimensions: DimensionsProtocol) throws {
-        typealias TypedDimensions = ControlledStateDimensionsProtocol
+        typealias TypedDimensions = ControllableStateDimensionsProtocol
 
         guard let typedDimensions = dimensions as? TypedDimensions else {
             throw DimensionsError.invalidType(
