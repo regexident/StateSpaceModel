@@ -37,7 +37,7 @@ extension LinearObservationModel: ObservationModelProtocol {
 
 extension LinearObservationModel: DimensionsValidatable {
     public func validate(for dimensions: DimensionsProtocol) throws {
-        typealias TypedDimensions = ObservedStateDimensionsProtocol
+        typealias TypedDimensions = ObservableStateDimensionsProtocol
 
         guard let typedDimensions = dimensions as? TypedDimensions else {
             throw DimensionsError.invalidType(
