@@ -4,13 +4,13 @@ import Surge
 import StateSpace
 
 public class LinearMotionModel {
-    public let state: Matrix<Double>
+    public let a: Matrix<Double>
 
     public init(
-        state: Matrix<Double>
+        a: Matrix<Double>
     ) {
-        assert(state.shape == .square, "Expected square matrix")
-        self.state = state
+        assert(a.shape == .square, "Expected square matrix")
+        self.a = a
     }
 }
 
@@ -24,28 +24,27 @@ extension LinearMotionModel: Differentiable {
 
 extension LinearMotionModel: UncontrollableMotionModelProtocol {
    public func apply(state x: State) -> State {
-        let a = self.state
-        return a * x
+        return self.a * x
     }
 }
 
 extension LinearMotionModel: DifferentiableMotionModelProtocol {
     public func jacobian(state x: State) -> Jacobian {
-        return self.state
+        return self.a
     }
 }
 
 extension LinearMotionModel: DimensionsValidatable {
     public func validate(for dimensions: DimensionsProtocol) throws {
-        guard self.state.columns == dimensions.state else {
+        guard self.a.columns == dimensions.state else {
             throw MatrixError.invalidColumnCount(
-                message: "Expected \(dimensions.state) columns in `self.state`, found \(self.state.columns)"
+                message: "Expected \(dimensions.state) columns in `self.a`, found \(self.a.columns)"
             )
         }
 
-        guard self.state.rows == dimensions.state else {
+        guard self.a.rows == dimensions.state else {
             throw MatrixError.invalidRowCount(
-                message: "Expected \(dimensions.state) columns in `self.state`, found \(self.state.rows)"
+                message: "Expected \(dimensions.state) columns in `self.a`, found \(self.a.rows)"
             )
         }
     }
