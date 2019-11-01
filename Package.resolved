@@ -6,7 +6,7 @@
         "repositoryURL": "https://github.com/regexident/StateSpace",
         "state": {
           "branch": "master",
-          "revision": "233cf3931e90b7d07dae8209f94a83e94aea19ec",
+          "revision": "2a644e5916b2a5047cd2b35cdf997f1f198f4a07",
           "version": null
         }
       },
@@ -15,7 +15,7 @@
         "repositoryURL": "https://github.com/jounce/Surge",
         "state": {
           "branch": "master",
-          "revision": "2f35e097244c1c437ac9862fdd30b82f266c7ded",
+          "revision": "844fd175cfc18cf36e6f1a6606d29d5e61caddd8",
           "version": null
         }
       }
