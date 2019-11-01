@@ -6,24 +6,29 @@ import StateSpace
 public class BrownianMotionModel<MotionModel> {
     let motionModel: MotionModel
 
-    public let noise: Vector<Double>
+    public let stdDeviations: Vector<Double>
 
     public init(
         motionModel: MotionModel,
-        noise: Vector<Double>
+        stdDeviations: Vector<Double>
     ) {
         self.motionModel = motionModel
-        self.noise = noise
+        self.stdDeviations = stdDeviations
     }
 
     private func applyBrownianMotion(state x: Vector<Double>) -> Vector<Double> {
-        fatalError("Unimplemented")
+        assert(x.dimensions == self.stdDeviations.dimensions)
 
-        // FIXME: generate normal-distributed noise displacement vector
-        // with with mean `0.0` and individual std-deviations from `self.noise`,
+        // Generate normal-distributed noise with standard deviation of 1.0:
+        var prediction: Vector<Double> = .randomNormal(count: x.dimensions)
 
-        // let y = self.noise
-        // return x + y
+        // Scale noise to match provided standard deviations:
+        prediction .*= self.stdDeviations
+
+        // Add noise to state:
+        prediction += x
+
+        return prediction
     }
 }
 
@@ -91,9 +96,9 @@ extension BrownianMotionModel: DimensionsValidatable {
             try validatableModel.validate(for: dimensions)
         }
 
-        guard self.noise.dimensions == dimensions.state else {
+        guard self.stdDeviations.dimensions == dimensions.state else {
             throw VectorError.invalidDimensionCount(
-                message: "Expected \(dimensions.state) dimensions in `self.noise`, found \(self.noise.dimensions)"
+                message: "Expected \(dimensions.state) dimensions in `self.stdDeviations`, found \(self.stdDeviations.dimensions)"
             )
         }
     }
