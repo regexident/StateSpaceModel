@@ -16,7 +16,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/regexident/StateSpace", .branch("master")),
-        .package(url: "https://github.com/jounce/Surge", .branch("master")),
+        .package(url: "https://github.com/jounce/Surge", from: "2.3.0"),
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
