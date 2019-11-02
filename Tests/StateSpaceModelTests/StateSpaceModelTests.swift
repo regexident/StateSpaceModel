@@ -1,4 +1,5 @@
 import XCTest
+
 @testable import StateSpaceModel
 
 final class StateSpaceModelTests: XCTestCase {
