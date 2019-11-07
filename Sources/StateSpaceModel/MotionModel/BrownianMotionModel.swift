@@ -7,20 +7,41 @@ public class BrownianMotionModel<MotionModel> {
     let motionModel: MotionModel
 
     public let stdDeviations: Vector<Double>
+    private var generator: AnyRandomNumberGenerator
 
-    public init(
+    public convenience init(
         motionModel: MotionModel,
         stdDeviations: Vector<Double>
     ) {
+        let generator = SystemRandomNumberGenerator()
+        self.init(
+            motionModel: motionModel,
+            stdDeviations: stdDeviations,
+            generator: generator
+        )
+    }
+
+    public init<T>(
+        motionModel: MotionModel,
+        stdDeviations: Vector<Double>,
+        generator: T
+    )
+    where
+        T: RandomNumberGenerator
+    {
         self.motionModel = motionModel
         self.stdDeviations = stdDeviations
+        self.generator = AnyRandomNumberGenerator(generator)
     }
 
     private func applyBrownianMotion(state x: Vector<Double>) -> Vector<Double> {
         assert(x.dimensions == self.stdDeviations.dimensions)
 
         // Generate normal-distributed noise with standard deviation of 1.0:
-        var prediction: Vector<Double> = .randomNormal(count: x.dimensions)
+        var prediction: Vector<Double> = .randomNormal(
+            count: x.dimensions,
+            using: &self.generator
+        )
 
         // Scale noise to match provided standard deviations:
         prediction .*= self.stdDeviations
